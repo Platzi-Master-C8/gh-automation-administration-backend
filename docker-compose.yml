@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  dev:
+    build:
+      context: .
+    image: ${APP_NAME}:latest
+    container_name: ${APP_NAME}
+    volumes:
+      - .:/app
+    ports:
+      - "${APP_PORT}:8000"
+    command: "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"

@@ -1,7 +1,7 @@
 from sqlmodel import SQLModel
 
 from app.models import *
-from app.database import first_admin
+from app.database import superuser
 from app.database import engine
 from app.resources import users
 
@@ -15,5 +15,5 @@ def drop_db_and_tables():
     print("DEBUG:   ", "Database and tables dropped.")
 
 def create_admin_user():
-    users.create(first_admin)
+    users.create(superuser)
     print("DEBUG:   ", "Admin user created.")

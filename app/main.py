@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.database import create_admin_user
+from app.database import create_first_admin
 from app.database import create_db_and_tables
 from app.database import drop_db_and_tables
 from app.routers import *
@@ -12,7 +12,7 @@ app.include_router(users_router)
 def startup():
     drop_db_and_tables()
     create_db_and_tables()
-    create_admin_user()
+    create_first_admin()
 
 @app.get("/")
 def root():

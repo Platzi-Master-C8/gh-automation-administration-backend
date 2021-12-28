@@ -12,9 +12,9 @@ def startup():
     create_db_and_tables()
     create_admin_user()
 
-@app.get('/')
+@app.get("/")
 def root():
-    return {'Hola': 'Mundo'}
+    return {"Hola": "Mundo"}
     
-if __name__ == '__main__':
+if __name__ == "__main__":
     uvicorn.run("app.main:app", host="0.0.0.0", port=80)

@@ -1,3 +1,5 @@
+import uvicorn
+
 from fastapi import FastAPI
 
 from app.database import create_first_admin

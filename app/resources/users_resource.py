@@ -4,8 +4,8 @@ from sqlmodel import select, Session
 
 from app.models import User
 from app.database import engine
-from app.schemas.user_schemas import UserCreate, UserUpdate
-from app.utils import hash_password
+from app.schemas import UserCreate, UserUpdate
+from app.utils import hash_password, to_dict
 
 
 class UsersResource():
@@ -14,13 +14,9 @@ class UsersResource():
         self.session = session
 
     def create(self, data: Union[dict, UserCreate]) -> User:
-        if type(data) is not dict:
-            data_as_dict = data.dict()
-            data_as_dict["password"] = hash_password(data_as_dict["password"])
-            user = self.model(**data_as_dict)
-        else:
-            data["password"] = hash_password(data["password"])
-            user = self.model(**data)
+        obj_in_data = to_dict(data)
+        obj_in_data["password"] = hash_password(obj_in_data["password"])
+        user = self.model(**obj_in_data)
         with self.session as session:
             session.add(user)
             session.commit()
@@ -43,12 +39,12 @@ class UsersResource():
             return users
 
     def update(self, id: int, data: UserUpdate) -> User:
-        data_as_dict = data.dict(exclude_unset=True)
-        if "password" in data_as_dict:
-            data_as_dict["password"] = hash_password(data_as_dict["password"])
+        obj_in_data = to_dict(data)
+        if "password" in obj_in_data:
+            obj_in_data["password"] = hash_password(obj_in_data["password"])
         with self.session as session:
             user = session.get(self.model, id)
-            for key, value in data_as_dict.items():
+            for key, value in obj_in_data.items():
                 setattr(user, key, value)
             session.add(user)
             session.commit()

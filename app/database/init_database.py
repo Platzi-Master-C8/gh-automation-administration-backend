@@ -16,4 +16,4 @@ def drop_db_and_tables():
 
 def create_first_admin():
     users.create(superuser)
-    print("DEBUG:   ", "Admin user created.")
+    print("DEBUG:   ", "First administrator created.")

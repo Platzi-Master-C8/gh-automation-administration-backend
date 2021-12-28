@@ -6,8 +6,11 @@ WORKDIR /code
 COPY ./requirements.txt /code/requirements.txt
 
 RUN /usr/local/bin/python -m pip install --upgrade pip \
-    && apk add --no-cache --update musl-dev gcc libffi-dev \
-    && pip install --no-cache-dir --upgrade -r /code/requirements.txt
+    && apk add --no-cache --update --virtual .build-deps \
+        gcc libffi-dev musl-dev \
+    && apk add --no-cache --update postgresql-dev  \
+    && pip install --no-cache-dir --upgrade -r /code/requirements.txt \
+    && apk del .build-deps
 
 # Development build
 FROM base AS development

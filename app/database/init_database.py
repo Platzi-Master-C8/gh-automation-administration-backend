@@ -14,6 +14,6 @@ def drop_db_and_tables():
     SQLModel.metadata.drop_all(engine)
     print("DEBUG:   ", "Database and tables dropped.")
 
-def create_admin_user():
+def create_first_admin():
     users.create(superuser)
     print("DEBUG:   ", "Admin user created.")

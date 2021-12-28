@@ -133,3 +133,6 @@ dmypy.json
 
 # Vercel
 .vercel
+
+# SQLite
+app/database/*.db

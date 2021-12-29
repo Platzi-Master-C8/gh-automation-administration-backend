@@ -1,6 +1,6 @@
 from sqlmodel import create_engine
 
-DB_FILE = "/code/app/database/gh-aut-admin-api.db"
-DB_URL = f"sqlite:///{DB_FILE}"
+from app.database.connections import get_uri
 
-engine = create_engine(DB_URL)
+uri = get_uri()
+engine = create_engine(uri)

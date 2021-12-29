@@ -10,4 +10,4 @@ def hash_password(password: str) -> str:
         password.encode(),
         bcrypt.gensalt()
     )
-    return hashed_password
+    return hashed_password.decode('utf-8')

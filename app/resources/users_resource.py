@@ -32,7 +32,7 @@ class UsersResource():
  
     def get_all(self) -> List[User]:
         with self.session as session:
-            statement = select(self.model).where(self.model.is_active == True)
+            statement = select(self.model).where(self.model.is_deleted == False)
             result = session.exec(statement)
             users = result.all()
             session.close()
@@ -55,7 +55,7 @@ class UsersResource():
     def delete(self, id: int) -> None:
         with self.session as session:
             user = session.get(self.model, id)
-            user.is_active = False
+            user.is_deleted = True
             session.add(user)
             session.commit()
             session.refresh(user)

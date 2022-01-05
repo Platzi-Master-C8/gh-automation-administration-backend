@@ -1,19 +1,23 @@
-from typing import List, Union
+from typing import Optional, Union
 
-from sqlmodel import select, Session
+from sqlmodel import Session
 
 from app.models import User
 from app.database import engine
+from app.resources import BaseResource
 from app.schemas import UserCreate, UserUpdate
 from app.utils import hash_password, to_dict
 
 
-class UsersResource():
-    def __init__(self, model: User, session: Session):
-        self.model = model
-        self.session = session
-
+class UsersResource(BaseResource[User, UserCreate, UserUpdate]):
+    """
+    Class representing a users resource.
+    """
     def create(self, data: Union[dict, UserCreate]) -> User:
+        """
+        Receive data from router to insert it into database.
+        Before insert, hash the password.
+        """
         obj_in_data = to_dict(data)
         obj_in_data["password"] = hash_password(obj_in_data["password"])
         user = self.model(**obj_in_data)
@@ -24,21 +28,11 @@ class UsersResource():
             session.close()
             return user
 
-    def get_one(self, id: int) -> User:
-        with self.session as session:
-            user = session.get(self.model, id)
-            session.close()
-            return user
- 
-    def get_all(self) -> List[User]:
-        with self.session as session:
-            statement = select(self.model).where(self.model.is_deleted == False)
-            result = session.exec(statement)
-            users = result.all()
-            session.close()
-            return users
-
-    def update(self, id: int, data: UserUpdate) -> User:
+    def update(self, id: int, data: UserUpdate) -> Optional[User]:
+        """
+        Receive ID and data from router to update an item in database.
+        Check if data contains the password key to hash it before update.
+        """
         obj_in_data = to_dict(data)
         if "password" in obj_in_data:
             obj_in_data["password"] = hash_password(obj_in_data["password"])
@@ -46,16 +40,6 @@ class UsersResource():
             user = session.get(self.model, id)
             for key, value in obj_in_data.items():
                 setattr(user, key, value)
-            session.add(user)
-            session.commit()
-            session.refresh(user)
-            session.close()
-            return user
-
-    def delete(self, id: int) -> None:
-        with self.session as session:
-            user = session.get(self.model, id)
-            user.is_deleted = True
             session.add(user)
             session.commit()
             session.refresh(user)

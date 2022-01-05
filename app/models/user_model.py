@@ -1,12 +1,12 @@
 from typing import Optional
-from datetime import datetime
 
-from sqlalchemy import Column, DateTime, String
-from sqlalchemy.sql import func
-from sqlmodel import Field, SQLModel
+from sqlalchemy import Column, String
+from sqlmodel import Field
+
+from app.models import Auditor
 
 
-class User(SQLModel, table=True):
+class User(Auditor, table=True):
     """
     Class representing a user in database.
     """
@@ -23,18 +23,3 @@ class User(SQLModel, table=True):
         )
     )
     password: str = Field(..., max_length=64)
-    is_active: Optional[bool] = Field(default=True)
-    created_at: Optional[datetime] = Field(
-        sa_column=Column(
-            DateTime(timezone=True),
-            server_default=func.now(),
-        )
-    )
-    created_by: Optional[int] = Field(default=None)
-    updated_at: Optional[datetime] = Field(
-        sa_column=Column(
-            DateTime(timezone=True),
-            onupdate=func.now(),
-        )
-    )
-    updated_by: Optional[int] = Field(default=None)

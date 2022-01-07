@@ -8,6 +8,7 @@ from app.database import drop_db_and_tables
 from app.routers import *
 
 app = FastAPI()
+app.include_router(roles_router)
 app.include_router(users_router)
 
 @app.on_event("startup")

@@ -30,6 +30,9 @@ class BaseResource(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def get_one(self, id: int) -> Optional[ModelType]:
         with self.session as session:
             resource = session.get(self.model, id)
+            if resource == None:
+                session.close()
+                return None
             session.close()
             return resource
  
@@ -45,6 +48,9 @@ class BaseResource(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         obj_in_data = to_dict(data)
         with self.session as session:
             resource = session.get(self.model, id)
+            if resource == None:
+                session.close()
+                return None
             for key, value in obj_in_data.items():
                 setattr(resource, key, value)
             session.add(resource)
@@ -56,6 +62,9 @@ class BaseResource(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def delete(self, id: int) -> None:
         with self.session as session:
             resource = session.get(self.model, id)
+            if resource == None:
+                session.close()
+                return None
             resource.is_deleted = True
             session.add(resource)
             session.commit()

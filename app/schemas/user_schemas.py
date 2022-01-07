@@ -7,12 +7,6 @@ class UserBase(BaseModel):
     """
     Class containin shared properties.
     """
-
-    user_id: Optional[int] = Field(
-        title="User ID",
-        description="Unique identifier of the user.",
-        example=1,
-    )
     role_id: Optional[int] = Field(
         title="Role ID",
         description="Unique identifier of the role.",
@@ -35,7 +29,6 @@ class UserCreate(BaseModel):
     """
     Class containing properties for creating a new user.
     """
-
     email: EmailStr = Field(
         ...,
         title="Email",
@@ -56,7 +49,6 @@ class UserUpdate(UserBase):
     """
     Class containing properties for creating a new user.
     """
-
     password: Optional[str] = Field(
         min_length=6,
         max_length=32,
@@ -70,5 +62,9 @@ class User(UserBase):
     """
     Class containing properties for retrieveing to client.
     """
-
-    pass
+    user_id: int = Field(
+        ...,
+        title="User ID",
+        description="Unique identifier of the user.",
+        example=1,
+    )

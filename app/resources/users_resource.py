@@ -38,6 +38,9 @@ class UsersResource(BaseResource[User, UserCreate, UserUpdate]):
             obj_in_data["password"] = hash_password(obj_in_data["password"])
         with self.session as session:
             user = session.get(self.model, id)
+            if user == None:
+                session.close()
+                return None
             for key, value in obj_in_data.items():
                 setattr(user, key, value)
             session.add(user)

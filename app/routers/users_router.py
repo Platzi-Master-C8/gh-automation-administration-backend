@@ -3,6 +3,7 @@ from typing import List
 from fastapi import APIRouter, status
 
 from app.resources import users
+from app.responses import NotFoundExeption
 from app.schemas import User, UserCreate, UserUpdate
 
 
@@ -19,7 +20,7 @@ router = APIRouter(
 )
 async def create_user(data: UserCreate):
     """
-    Insert a new user into the database.
+    Create a new user with requested data.
     """
 
     created_user = users.create(data)
@@ -32,7 +33,7 @@ async def create_user(data: UserCreate):
 )
 async def read_users():
     """
-    Retrieve all users from the database.
+    Retrieve all requested users.
     """
     
     all_users = users.get_all()
@@ -46,10 +47,12 @@ async def read_users():
 )
 async def read_user(user_id: int):
     """
-    Retrieve a single user from the database.
+    Retrieve an specific user.
     """
 
     user = users.get_one(user_id)
+    if user == None:
+        raise NotFoundExeption("user", user_id)
     return user
 
 @router.put(
@@ -59,17 +62,21 @@ async def read_user(user_id: int):
 )
 async def update_user(user_id: int, user: UserUpdate):
     """
-    Update a single user in the database.
+    Update an specific user with requested data.
     """
 
     updated_user = users.update(user_id, user)
+    if updated_user == None:
+        raise NotFoundExeption("user", user_id)
     return updated_user
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(user_id: int):
     """
-    Soft delete a single user from the database.
+    Soft-delete an specific user.
     """
 
-    users.delete(user_id)
+    user = users.delete(user_id)
+    if user == None:
+        raise NotFoundExeption("user", user_id)
     return None

@@ -7,8 +7,10 @@ from app.database import create_first_admin
 from app.database import create_first_roles
 from app.database import drop_db_and_tables
 from app.routers import *
+from app.routers import auth_router
 
 app = FastAPI()
+app.include_router(auth_router)
 app.include_router(roles_router)
 app.include_router(users_router)
 

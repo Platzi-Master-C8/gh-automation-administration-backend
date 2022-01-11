@@ -1,6 +1,6 @@
 from typing import Optional, Union
 
-from sqlmodel import Session
+from sqlmodel import select, Session
 
 from app.models import User
 from app.database import engine
@@ -46,6 +46,16 @@ class UsersResource(BaseResource[User, UserCreate, UserUpdate]):
             session.add(user)
             session.commit()
             session.refresh(user)
+            session.close()
+            return user
+
+    def get_by_email(self, email: str) -> Optional[User]:
+        """
+        Receive email from router to get an item from database.
+        """
+        with self.session as session:
+            statement = select(self.model).where(self.model.email == email)
+            user = session.exec(statement).first()
             session.close()
             return user
 

@@ -11,7 +11,7 @@ SingleSchemaType = TypeVar("SingleSchemaType", bound=BaseModel)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
 UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 
-def configure(
+def setup_router(
     resource: Type[ResourceType],
     resource_name: str,
     single_schema: Type[SingleSchemaType],

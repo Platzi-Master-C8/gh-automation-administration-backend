@@ -1,6 +1,3 @@
-# MISC
-.DS_Store
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -131,5 +128,11 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Mocks
-shared/mocks/users.json
+# macOS
+.DS_Store
+
+# Vercel
+.vercel
+
+# SQLite
+app/database/*.db

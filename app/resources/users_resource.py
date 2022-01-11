@@ -49,5 +49,14 @@ class UsersResource(BaseResource[User, UserCreate, UserUpdate]):
             session.close()
             return user
 
+    def get_by_email(self, email: str) -> Optional[User]:
+        """
+        Receive email from router to get an item from database.
+        """
+        with self.session as session:
+            user = session.exec(self.model).filter_by(email=email).first()
+            session.close()
+            return user
+
 
 users = UsersResource(User, Session(engine))

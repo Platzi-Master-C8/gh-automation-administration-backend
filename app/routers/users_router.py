@@ -1,6 +1,6 @@
 from app.resources import users
 from app.schemas import User, UserCreate, UserUpdate
-from app.routers import configure
+from app.routers import setup_router
 
 
-users_router = configure(users, "users", User, UserCreate, UserUpdate)
+users_router = setup_router(users, "users", User, UserCreate, UserUpdate)

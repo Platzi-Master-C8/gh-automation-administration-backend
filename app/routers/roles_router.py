@@ -1,6 +1,6 @@
 from app.resources import roles
 from app.schemas import Role, RoleCreate, RoleUpdate
-from app.routers import configure
+from app.routers import setup_router
 
 
-roles_router = configure(roles, "roles", Role, RoleCreate, RoleUpdate)
+roles_router = setup_router(roles, "roles", Role, RoleCreate, RoleUpdate)

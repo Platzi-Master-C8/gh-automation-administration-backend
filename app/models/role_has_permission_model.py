@@ -9,11 +9,11 @@ class RoleHasPermission(SQLModel, table=True):
     """
     permission_id: Optional[int] = Field(
         default=None,
-        foreign_key="permission.id",
+        foreign_key="permission.permission_id",
         primary_key=True,
     )
     role_id: Optional[int] = Field(
         default=None,
-        foreign_key="role.id",
+        foreign_key="role.role_id",
         primary_key=True,
     )

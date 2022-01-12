@@ -25,5 +25,10 @@ class Settings():
     FIRST_ADMIN_EMAIL: str = os.getenv("FIRST_ADMIN_EMAIL")
     FIRST_ADMIN_PASSWORD: str = os.getenv("FIRST_ADMIN_PASSWORD")
 
+    # Access Token
+    SECRET_KEY = os.getenv('SECRET_KEY')
+    ALGORITHM = os.getenv('ALGORITHM', 'HS256')
+    EXPIRE_MINUTES = int(os.getenv('EXPIRE_MINUTES', '15'))
+
 
 settings = Settings()

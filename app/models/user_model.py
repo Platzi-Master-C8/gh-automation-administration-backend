@@ -4,6 +4,8 @@ from sqlalchemy import Column, String
 from sqlmodel import Field, Relationship
 
 from app.models import Auditor
+
+
 if TYPE_CHECKING:
     from app.models import Role
 

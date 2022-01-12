@@ -7,8 +7,8 @@ from app.models import Auditor
 
 
 if TYPE_CHECKING:
-    from app.models import RoleHasPermission
     from app.models import Permission
+    from app.models import RoleHasPermission
     from app.models import User
 
 
@@ -30,5 +30,5 @@ class Role(Auditor, table=True):
     users: List["User"] = Relationship(back_populates="role")
     permissions: List["Permission"] = Relationship(
         back_populates="roles",
-        link_model=RoleHasPermission
+        link_model=RoleHasPermission,
     )

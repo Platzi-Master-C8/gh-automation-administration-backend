@@ -1,4 +1,6 @@
-__all__ = ["Role", "User"]
+__all__ = ["Permission", "Role", "RoleHasPermission", "User"]
 from app.models.auditor_model import Auditor
-from app.models.role_model import Role
-from app.models.user_model import User
+from app.models.models import Permission
+from app.models.models import RoleHasPermission
+from app.models.models import Role
+from app.models.models import User

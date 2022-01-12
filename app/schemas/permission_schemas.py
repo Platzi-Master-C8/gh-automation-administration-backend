@@ -13,7 +13,6 @@ class PermissionBase(BaseModel):
     """
     permission_name: PermissionNameType = Field(
         ...,
-        max_length=50,
         title="Permission Name",
         description="Name of the permission",
         example="can-write-any-users",
@@ -22,7 +21,7 @@ class PermissionBase(BaseModel):
         min_length=5,
         title="Permission Description",
         description="Description of the permission",
-        example="Total control over users",
+        example="Total control over all users",
     )
 
 
@@ -38,10 +37,9 @@ class PermissionUpdate(PermissionBase):
     Class containing properties to update an existing permission.
     """
     permission_name: Optional[PermissionNameType] = Field(
-        max_length=50,
         title="Permission Name",
         description="Name of the permission",
-        example="Administrator",
+        example="can-write-any-user",
     )
 
 

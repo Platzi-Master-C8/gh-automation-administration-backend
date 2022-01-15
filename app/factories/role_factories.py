@@ -3,7 +3,7 @@ from faker import Faker
 
 from app.core import settings
 from app.models import Role
-from app.database.factories.permission_factories import RandomPermissionFactory
+from app.database.factories import RandomPermissionFactory
 
 
 fake = Faker()

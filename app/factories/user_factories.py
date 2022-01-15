@@ -13,7 +13,7 @@ class SuperadminUserFactory(factory.Factory):
         model = User
 
     
-    name = settings.FIRST_ADMIN_ROLE_ID
+    role_id = settings.FIRST_ADMIN_ROLE_ID
     email = settings.FIRST_ADMIN_EMAIL
     password = settings.FIRST_ADMIN_PASSWORD
     

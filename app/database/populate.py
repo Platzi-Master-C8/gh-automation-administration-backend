@@ -1,3 +1,6 @@
+from app.factories import AdministratorRoleFactory
+from app.factories import IndividualRoleFactory
+from app.factories import OrganizationRoleFactory
 from app.factories import RandomPermissionFactory
 from app.factories import RandomRoleFactory
 from app.factories import RandomUserFactory
@@ -20,7 +23,13 @@ def populate_roles(quantity: int) -> None:
     """
     Populate the database with specified quantity of roles.
     """
-    random_roles = RandomRoleFactory.create_batch(quantity)
+    administrator_role = AdministratorRoleFactory.create()
+    individual_role = IndividualRoleFactory.create()
+    organization_role = OrganizationRoleFactory.create()
+    roles.create(administrator_role)
+    roles.create(individual_role)
+    roles.create(organization_role)
+    random_roles = RandomRoleFactory.create_batch(quantity - 3)
     for role in random_roles:
         roles.create(role)
     print("DEBUG:   ", f"{quantity} random roles created.")

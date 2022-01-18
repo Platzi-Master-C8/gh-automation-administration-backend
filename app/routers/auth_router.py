@@ -7,12 +7,11 @@ from app.utils import create_access_token, verify_password
 
 
 router = APIRouter(
-    prefix='/auth',
-    tags=['auth']
+    tags=['auth'],
 )
 
-@router.post('/login')
-def login(form_data: OAuth2PasswordRequestForm = Depends()):
+@router.post('/token')
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     user = users.get_by_email(form_data.username)
     if not user:
         raise MismatchCredentialsExeption()
@@ -20,7 +19,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
         raise MismatchCredentialsExeption()
     data = {
         'sub': user.email,
-        'role_id': user.role_id
+        'role_id': user.role_id,
     }
     access_token = create_access_token(data)
     return {"access_token": access_token, "token_type": "bearer"}

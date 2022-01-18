@@ -1,5 +1,6 @@
 import bcrypt
 
+
 def verify_password(plain_password: str, hashed_password: str):
     """
     Compare a given password with another one stored in the database.

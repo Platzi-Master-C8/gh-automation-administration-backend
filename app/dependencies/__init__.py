@@ -1,1 +1,2 @@
-from app.dependencies import oauth2_scheme
+from app.dependencies.get_current_user_id import get_current_user_id
+from app.dependencies.oauth2_scheme import oauth2_scheme

@@ -1,10 +1,12 @@
 from typing import List, Type, TypeVar
 
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 from pydantic import BaseModel
-from app.resources import BaseResource
 
+from app.dependencies import get_current_user_id
+from app.resources import BaseResource
 from app.responses import NotFoundExeption
+
 
 ResourceType = TypeVar("ResourceType", bound=BaseResource)
 SingleSchemaType = TypeVar("SingleSchemaType", bound=BaseModel)
@@ -31,7 +33,10 @@ def setup_router(
         status_code=status.HTTP_201_CREATED,
         response_model=single_schema,
     )
-    async def create_resource(data: create_schema):
+    async def create_resource(
+        data: create_schema,
+        current_user_id: int = Depends(get_current_user_id),
+    ):
         """
         Create a new resource with requested data.
         """
@@ -43,9 +48,11 @@ def setup_router(
         status_code=status.HTTP_200_OK,
         response_model=List[single_schema],
     )
-    async def read_resources():
+    async def read_resources(
+        current_user_id: int = Depends(get_current_user_id)
+    ):
         """
-        Retrieve all requested users.
+        Retrieve all requested resources.
         """
         all = resource.get_all()
 
@@ -56,9 +63,12 @@ def setup_router(
         status_code=status.HTTP_200_OK,
         response_model=single_schema,
     )
-    async def read_resource(id: int):
+    async def read_resource(
+        id: int,
+        current_user_id: int = Depends(get_current_user_id)
+    ):
         """
-        Retrieve an specific user.
+        Retrieve an specific resource.
         """
         obtained = resource.get_one(id)
         if obtained == None:
@@ -70,9 +80,13 @@ def setup_router(
         status_code=status.HTTP_200_OK,
         response_model=single_schema,
     )
-    async def update_resource(id: int, data: update_schema):
+    async def update_resource(
+        id: int,
+        data: update_schema,
+        current_user_id: int = Depends(get_current_user_id),
+    ):
         """
-        Update an specific user with requested data.
+        Update an specific resource with requested data.
         """
         updated = resource.update(id, data)
         if updated == None:
@@ -80,9 +94,12 @@ def setup_router(
         return updated
 
     @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-    async def delete_resource(id: int):
+    async def delete_resource(
+        id: int,
+        current_user_id: int = Depends(get_current_user_id),
+    ):
         """
-        Soft-delete an specific user.
+        Soft-delete an specific resource.
         """
         deleted = resource.delete(id)
         if deleted == None:

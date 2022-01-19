@@ -29,6 +29,12 @@ class UserCreate(BaseModel):
     """
     Class containing properties for creating a new user.
     """
+    name: Optional[str] = Field(
+        max_length=50,
+        title="User Name",
+        description="Name of the user",
+        example="John Doe",
+    )
     email: EmailStr = Field(
         ...,
         title="Email",

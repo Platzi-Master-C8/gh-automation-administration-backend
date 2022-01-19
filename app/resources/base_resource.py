@@ -1,9 +1,11 @@
 from typing import Generic, List, Optional, Type, TypeVar, Union
 
 from pydantic import BaseModel
+from sqlalchemy.exc import IntegrityError
 from sqlmodel import select, Session
 
 from app.models import Auditor
+from app.responses import UniqueConstraintException
 from app.utils import to_dict
 
 
@@ -22,18 +24,18 @@ class BaseResource(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         resource = self.model(**obj_in_data)
         with self.session as session:
             session.add(resource)
-            session.commit()
+            try:
+                session.commit()
+            except IntegrityError as e:
+                raise UniqueConstraintException(e.params[0])
             session.refresh(resource)
-            session.close()
             return resource
 
     def get_one(self, id: int) -> Optional[ModelType]:
         with self.session as session:
             resource = session.get(self.model, id)
-            if resource == None:
-                session.close()
+            if resource == None or resource.is_deleted:
                 return None
-            session.close()
             return resource
  
     def get_all(self) -> List[ModelType]:
@@ -41,33 +43,31 @@ class BaseResource(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             statement = select(self.model).where(self.model.is_deleted == False)
             result = session.exec(statement)
             users = result.all()
-            session.close()
             return users
 
     def update(self, id: int, data: Union[CreateSchemaType, dict]) -> Optional[ModelType]:
         obj_in_data = to_dict(data)
         with self.session as session:
             resource = session.get(self.model, id)
-            if resource == None:
-                session.close()
+            if resource == None or resource.is_deleted:
                 return None
             for key, value in obj_in_data.items():
                 setattr(resource, key, value)
             session.add(resource)
-            session.commit()
+            try:
+                session.commit()
+            except IntegrityError as e:
+                raise UniqueConstraintException(e.params[0])
             session.refresh(resource)
-            session.close()
             return resource
 
-    def delete(self, id: int) -> None:
+    def delete(self, id: int) -> bool:
         with self.session as session:
             resource = session.get(self.model, id)
-            if resource == None:
-                session.close()
+            if resource == None or resource.is_deleted:
                 return None
             resource.is_deleted = True
             session.add(resource)
             session.commit()
             session.refresh(resource)
-            session.close()
-            return resource
+            return True

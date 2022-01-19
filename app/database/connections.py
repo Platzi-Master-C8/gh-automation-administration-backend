@@ -33,7 +33,7 @@ def get_uri():
     env = settings.APP_ENV
     if env == "development":
         uri = get_sqlite_uri()
-    elif env == "production":
+    elif env == "production" or env == "test":
         driver = settings.DB_DRIVER
         if driver == "postgresql":
             uri = get_postgresql_uri()

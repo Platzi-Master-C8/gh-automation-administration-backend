@@ -1,10 +1,12 @@
 from typing import Optional, Union
 
-from sqlmodel import Session
+from sqlalchemy.exc import IntegrityError
+from sqlmodel import select, Session
 
-from app.models import User
 from app.database import engine
+from app.models import User
 from app.resources import BaseResource
+from app.responses import UniqueConstraintException
 from app.schemas import UserCreate, UserUpdate
 from app.utils import hash_password, to_dict
 
@@ -23,9 +25,12 @@ class UsersResource(BaseResource[User, UserCreate, UserUpdate]):
         user = self.model(**obj_in_data)
         with self.session as session:
             session.add(user)
+            try:
+                session.commit()
+            except IntegrityError as e:
+                raise UniqueConstraintException(e.params[0])
             session.commit()
             session.refresh(user)
-            session.close()
             return user
 
     def update(self, id: int, data: UserUpdate) -> Optional[User]:
@@ -38,15 +43,27 @@ class UsersResource(BaseResource[User, UserCreate, UserUpdate]):
             obj_in_data["password"] = hash_password(obj_in_data["password"])
         with self.session as session:
             user = session.get(self.model, id)
-            if user == None:
-                session.close()
+            if user == None or user.is_deleted:
                 return None
             for key, value in obj_in_data.items():
                 setattr(user, key, value)
             session.add(user)
-            session.commit()
+            try:
+                session.commit()
+            except IntegrityError as e:
+                raise UniqueConstraintException(e.params[0])
             session.refresh(user)
-            session.close()
+            return user
+
+    def get_by_email(self, email: str) -> Optional[User]:
+        """
+        Receive email from router to get an item from database.
+        """
+        with self.session as session:
+            statement = select(self.model).where(self.model.email == email)
+            user = session.exec(statement).first()
+            if user == None or user.is_deleted:
+                return None
             return user
 
 

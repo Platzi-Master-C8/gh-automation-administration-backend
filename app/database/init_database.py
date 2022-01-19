@@ -1,19 +1,20 @@
-from sqlmodel import SQLModel
-
+from app.core import settings
+from app.database.populate import populate_permissions
+from app.database.populate import populate_roles
+from app.database.populate import populate_users
+from app.database.reset import crate_all_tables
+from app.database.reset import drop_all_tables
 from app.models import *
-from app.database import superuser
-from app.database import engine
-from app.resources import users
 
 
-def create_db_and_tables():
-    SQLModel.metadata.create_all(engine)
-    print("DEBUG:   ", "Database and tables created.")
-
-def drop_db_and_tables():
-    SQLModel.metadata.drop_all(engine)
-    print("DEBUG:   ", "Database and tables dropped.")
-
-def create_first_admin():
-    users.create(superuser)
-    print("DEBUG:   ", "First administrator created.")
+def init_database()->None:
+    """
+    Run the database initialization functions according to the settings.
+    """
+    if settings.DB_RESET == "true" or settings.DB_RESET == "True":
+        drop_all_tables()
+        crate_all_tables()
+    if settings.DB_POPULATE == "true" or settings.DB_POPULATE == "True":
+        populate_permissions(settings.DB_POPULATION) 
+        populate_roles(settings.DB_POPULATION) 
+        populate_users(settings.DB_POPULATION) 

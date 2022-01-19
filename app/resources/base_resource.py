@@ -1,9 +1,11 @@
 from typing import Generic, List, Optional, Type, TypeVar, Union
 
 from pydantic import BaseModel
+from sqlalchemy.exc import IntegrityError
 from sqlmodel import select, Session
 
 from app.models import Auditor
+from app.responses import UniqueConstraintException
 from app.utils import to_dict
 
 
@@ -22,7 +24,10 @@ class BaseResource(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         resource = self.model(**obj_in_data)
         with self.session as session:
             session.add(resource)
-            session.commit()
+            try:
+                session.commit()
+            except IntegrityError as e:
+                raise UniqueConstraintException(e.params[0])
             session.refresh(resource)
             return resource
 
@@ -49,7 +54,10 @@ class BaseResource(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             for key, value in obj_in_data.items():
                 setattr(resource, key, value)
             session.add(resource)
-            session.commit()
+            try:
+                session.commit()
+            except IntegrityError as e:
+                raise UniqueConstraintException(e.params[0])
             session.refresh(resource)
             return resource
 

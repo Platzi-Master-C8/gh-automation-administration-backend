@@ -1,2 +1,3 @@
-from app.responses.custom_exeptions import MismatchCredentialsExeption
-from app.responses.custom_exeptions import NotFoundExeption
+from app.responses.mismatch_credentials_exeption import MismatchCredentialsExeption
+from app.responses.not_found_exeption import NotFoundExeption
+from app.responses.unique_constraint_exception import UniqueConstraintException

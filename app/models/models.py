@@ -1,4 +1,4 @@
-from typing import List, Optional, TYPE_CHECKING
+from typing import List, Optional
 
 from sqlalchemy import Column, String
 from sqlmodel import Field, Relationship, SQLModel

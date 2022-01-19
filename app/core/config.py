@@ -23,8 +23,8 @@ class Settings():
     DB_USER: str = os.getenv("DB_USER")
     DB_PASSWORD: str = os.getenv("DB_PASSWORD")
     DB_NAME: str = os.getenv("DB_NAME")
-    DB_RESET: bool = bool(os.getenv("DB_RESET"))
-    DB_POPULATE: bool = bool(os.getenv("DB_POPULATE"))
+    DB_RESET: str = os.getenv("DB_RESET")
+    DB_POPULATE: str = os.getenv("DB_POPULATE")
     DB_POPULATION: int = int(os.getenv("DB_POPULATION"))
 
     # First administrator

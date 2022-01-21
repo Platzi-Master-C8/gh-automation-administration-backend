@@ -40,7 +40,7 @@ def setup_router(
         """
         Create a new resource with requested data.
         """
-        created = resource.create(data)
+        created = resource.create(data, current_user_id)
         return created
 
     @router.get(
@@ -49,61 +49,60 @@ def setup_router(
         response_model=List[single_schema],
     )
     async def read_resources(
-        current_user_id: int = Depends(get_current_user_id)
+        current_user_id: int = Depends(get_current_user_id),
     ):
         """
         Retrieve all requested resources.
         """
         all = resource.get_all()
-
         return all
 
     @router.get(
-        "/{id}",
+        "/{resource_id}",
         status_code=status.HTTP_200_OK,
         response_model=single_schema,
     )
     async def read_resource(
-        id: int,
-        current_user_id: int = Depends(get_current_user_id)
+        resource_id: int,
+        current_user_id: int = Depends(get_current_user_id),
     ):
         """
         Retrieve an specific resource.
         """
-        obtained = resource.get_one(id)
+        obtained = resource.get_one(resource_id)
         if obtained == None:
-            raise NotFoundExeption(resource_name, id)
+            raise NotFoundExeption(resource_name, resource_id)
         return obtained
 
     @router.put(
-        "/{id}",
+        "/{resource_id}",
         status_code=status.HTTP_200_OK,
         response_model=single_schema,
     )
     async def update_resource(
-        id: int,
+        resource_id: int,
         data: update_schema,
         current_user_id: int = Depends(get_current_user_id),
     ):
         """
         Update an specific resource with requested data.
         """
-        updated = resource.update(id, data)
+        updated = resource.update(resource_id, data, current_user_id)
         if updated == None:
-            raise NotFoundExeption(resource_name, id)
+            raise NotFoundExeption(resource_name, resource_id)
         return updated
 
-    @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+    @router.delete("/{resource_id}", status_code=status.HTTP_204_NO_CONTENT)
     async def delete_resource(
-        id: int,
+        resource_id: int,
         current_user_id: int = Depends(get_current_user_id),
     ):
         """
         Soft-delete an specific resource.
         """
-        deleted = resource.delete(id)
+        deleted = resource.delete(resource_id, current_user_id)
         if deleted == None:
-            raise NotFoundExeption(resource_name, id)
+            raise NotFoundExeption(resource_name, resource_id)
         return None
 
     return router

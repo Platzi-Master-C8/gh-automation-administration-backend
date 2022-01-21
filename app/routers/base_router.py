@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 from app.dependencies import get_current_user_id
 from app.resources import BaseResource
-from app.responses import NotFoundExeption
+from app.responses import NotFoundException
 
 
 ResourceType = TypeVar("ResourceType", bound=BaseResource)
@@ -71,7 +71,7 @@ def setup_router(
         """
         obtained = resource.get_one(resource_id)
         if obtained == None:
-            raise NotFoundExeption(resource_name, resource_id)
+            raise NotFoundException(resource_name, resource_id)
         return obtained
 
     @router.put(
@@ -89,7 +89,7 @@ def setup_router(
         """
         updated = resource.update(resource_id, data, current_user_id)
         if updated == None:
-            raise NotFoundExeption(resource_name, resource_id)
+            raise NotFoundException(resource_name, resource_id)
         return updated
 
     @router.delete("/{resource_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -102,7 +102,7 @@ def setup_router(
         """
         deleted = resource.delete(resource_id, current_user_id)
         if deleted == None:
-            raise NotFoundExeption(resource_name, resource_id)
+            raise NotFoundException(resource_name, resource_id)
         return None
 
     return router

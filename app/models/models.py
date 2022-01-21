@@ -52,7 +52,6 @@ class Role(Auditor, table=True):
         sa_column=Column(
             "role_name",
             String(50),
-            nullable=False,
             unique=True,
         )
     )
@@ -75,7 +74,6 @@ class User(Auditor, table=True):
         sa_column=Column(
             "email",
             String(50),
-            nullable=False,
             unique=True,
         )
     )

@@ -34,13 +34,13 @@ class BaseResource(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def get_one(self, id: int) -> Optional[ModelType]:
         with self.session as session:
             resource = session.get(self.model, id)
-            if resource == None or resource.is_deleted:
+            if resource == None or not resource.active:
                 return None
             return resource
  
     def get_all(self) -> List[ModelType]:
         with self.session as session:
-            statement = select(self.model).where(self.model.is_deleted == False)
+            statement = select(self.model).where(self.model.active == True)
             result = session.exec(statement)
             users = result.all()
             return users
@@ -49,7 +49,7 @@ class BaseResource(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         obj_in_data = to_dict(data)
         with self.session as session:
             resource = session.get(self.model, id)
-            if resource == None or resource.is_deleted:
+            if resource == None or not resource.active:
                 return None
             for key, value in obj_in_data.items():
                 setattr(resource, key, value)
@@ -64,9 +64,9 @@ class BaseResource(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def delete(self, id: int) -> bool:
         with self.session as session:
             resource = session.get(self.model, id)
-            if resource == None or resource.is_deleted:
+            if resource == None or not resource.active:
                 return None
-            resource.is_deleted = True
+            resource.active = False
             session.add(resource)
             session.commit()
             session.refresh(resource)

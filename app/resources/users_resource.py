@@ -43,7 +43,7 @@ class UsersResource(BaseResource[User, UserCreate, UserUpdate]):
             obj_in_data["password"] = hash_password(obj_in_data["password"])
         with self.session as session:
             user = session.get(self.model, id)
-            if user == None or user.is_deleted:
+            if user == None or not user.active:
                 return None
             for key, value in obj_in_data.items():
                 setattr(user, key, value)
@@ -62,7 +62,7 @@ class UsersResource(BaseResource[User, UserCreate, UserUpdate]):
         with self.session as session:
             statement = select(self.model).where(self.model.email == email)
             user = session.exec(statement).first()
-            if user == None or user.is_deleted:
+            if user == None or not user.active:
                 return None
             return user
 

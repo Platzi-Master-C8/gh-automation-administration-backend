@@ -15,7 +15,11 @@ class UsersResource(BaseResource[User, UserCreate, UserUpdate]):
     """
     Class representing a users resource.
     """
-    def create(self, data: Union[dict, UserCreate]) -> User:
+    def create(
+        self,
+        data: Union[dict, UserCreate],
+        current_user_id: int,
+    ) -> User:
         """
         Receive data from router to insert it into database.
         Before insert, hash the password.
@@ -23,27 +27,34 @@ class UsersResource(BaseResource[User, UserCreate, UserUpdate]):
         obj_in_data = to_dict(data)
         obj_in_data["password"] = hash_password(obj_in_data["password"])
         user = self.model(**obj_in_data)
+        user.created_by = current_user_id
         with self.session as session:
             session.add(user)
             try:
                 session.commit()
             except IntegrityError as e:
-                raise UniqueConstraintException(e.params[0])
+                raise UniqueConstraintException()
             session.commit()
             session.refresh(user)
             return user
 
-    def update(self, id: int, data: UserUpdate) -> Optional[User]:
+    def update(
+        self,
+        id: int,
+        data: UserUpdate,
+        current_user_id: int,
+    ) -> Optional[User]:
         """
         Receive ID and data from router to update an item in database.
         Check if data contains the password key to hash it before update.
         """
         obj_in_data = to_dict(data)
+        obj_in_data.update({"updated_by": current_user_id})
         if "password" in obj_in_data:
             obj_in_data["password"] = hash_password(obj_in_data["password"])
         with self.session as session:
             user = session.get(self.model, id)
-            if user == None or user.is_deleted:
+            if user == None or not user.active:
                 return None
             for key, value in obj_in_data.items():
                 setattr(user, key, value)
@@ -51,7 +62,7 @@ class UsersResource(BaseResource[User, UserCreate, UserUpdate]):
             try:
                 session.commit()
             except IntegrityError as e:
-                raise UniqueConstraintException(e.params[0])
+                raise UniqueConstraintException()
             session.refresh(user)
             return user
 
@@ -62,7 +73,7 @@ class UsersResource(BaseResource[User, UserCreate, UserUpdate]):
         with self.session as session:
             statement = select(self.model).where(self.model.email == email)
             user = session.exec(statement).first()
-            if user == None or user.is_deleted:
+            if user == None or not user.active:
                 return None
             return user
 

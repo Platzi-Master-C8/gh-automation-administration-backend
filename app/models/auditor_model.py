@@ -10,7 +10,7 @@ class Auditor(SQLModel):
     Class containing the common attributes for all entities.
     """
 
-    is_deleted: Optional[bool] = Field(default=False)
+    active: Optional[bool] = Field(default=True)
     created_at: Optional[datetime] = Field(
         sa_column=Column(
             DateTime(timezone=True),

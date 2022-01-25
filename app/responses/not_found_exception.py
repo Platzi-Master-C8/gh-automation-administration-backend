@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 
 
-class NotFoundExeption(HTTPException):
+class NotFoundException(HTTPException):
     """
     Class reperesenting a `not found` custom exception.
     Throw this exception when a router receives `None` from resources at `id`

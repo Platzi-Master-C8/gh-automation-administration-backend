@@ -7,13 +7,12 @@ class UniqueConstraintException(HTTPException):
     Throw this exception when attempting to create a resource with a duplicated
     value on fields with `unique` constraint.
     """
-    def __init__(self, value: str):
+    def __init__(self):
         self.status_code = status.HTTP_400_BAD_REQUEST
         self.detail = {
             "status": status.HTTP_400_BAD_REQUEST,
             "code": "PENGUIN",
             "title": "Unique constraint violation",
             "description":
-                # f"The value '{value}' is not available.",
                 "One or more fields already exists with the same value.",
         }

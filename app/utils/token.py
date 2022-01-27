@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 
-from fastapi import HTTPException, status
 from jose import jwt, JWTError
 
 from app.core import settings

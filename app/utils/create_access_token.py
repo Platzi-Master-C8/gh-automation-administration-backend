@@ -1,10 +1,8 @@
 from datetime import datetime, timedelta
 
-from fastapi import HTTPException, status
-from jose import jwt, JWTError
+from jose import jwt
 
 from app.core import settings
-from app.responses import MismatchCredentialsExeption
 
 
 def create_access_token(data: dict):
@@ -20,17 +18,3 @@ def create_access_token(data: dict):
         algorithm=settings.ALGORITHM
     )
     return encoded_jwt
-
-def get_payload(token: str):
-    """
-    Obtain the payload of a given token.
-    """
-    try:
-        payload = jwt.decode(
-            token,
-            settings.SECRET_KEY,
-            algorithms=[settings.ALGORITHM],
-        )
-    except JWTError:
-        raise MismatchCredentialsExeption()
-    return payload

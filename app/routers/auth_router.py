@@ -8,6 +8,7 @@ from app.responses import MismatchCredentialsExeption
 from app.schemas import Token
 from app.utils import create_access_token
 from app.utils import get_response_login
+from app.utils import get_verified_token
 from app.utils import verify_password
 
 
@@ -35,3 +36,15 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> dict:
     access_token = create_access_token(data)
     response_login = get_response_login(access_token)
     return response_login 
+
+@router.get(
+    "/token/verify",
+    status_code=status.HTTP_200_OK,
+    response_model=Token
+)
+async def verify_token(token: str) -> dict:
+    """
+    Verify integrity of token.
+    """
+    verified_token = get_verified_token(token)
+    return verified_token

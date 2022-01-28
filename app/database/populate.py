@@ -45,3 +45,21 @@ def populate_users(quantity: int)-> None:
     for user in random_users:
         users.create(user, 1)
     print("DEBUG:   ", f"{quantity} users created.")
+
+def set_relationships(quantity: int) -> None:
+    """
+    Establish relationships between roles and permissions.
+    """
+    raw_permissions = permissions.get_all()
+    converted_permissions = []
+    for raw_permission in raw_permissions:
+        permission = {
+            "permission_id": raw_permission.permission_id,
+            "permission_name": raw_permission.permission_name,
+            "permission_description": raw_permission.permission_description,
+        }
+        # permission = to_dict(raw_permission)
+        converted_permissions.append(permission)
+    for index in range(quantity):
+        roles.update_permissions(index + 1, converted_permissions, 1)
+    print("DEBUG:   ", "Relationships set.")

@@ -7,6 +7,7 @@ from app.resources import users
 from app.responses import MismatchCredentialsExeption
 from app.schemas import Token
 from app.utils import create_access_token
+from app.utils import get_permissions_as_string
 from app.utils import get_response_login
 from app.utils import get_verified_token
 from app.utils import verify_password
@@ -28,10 +29,16 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> dict:
         raise MismatchCredentialsExeption()
     if not verify_password(form_data.password, user.password):
         raise MismatchCredentialsExeption()
+    sub = user.email
+    user_id = user.user_id
+    role_id = user.role_id
+    permissions = users.get_permissions(user_id)
+    scope = get_permissions_as_string(permissions)
     data = {
-        "sub": user.email,
-        "user_id": user.user_id,
-        "role_id": user.role_id,
+        "sub": sub,
+        "user_id": user_id,
+        "role_id": role_id,
+        "scope": scope,
     }
     access_token = create_access_token(data)
     response_login = get_response_login(access_token)

@@ -1,14 +1,20 @@
-from typing import Optional, Union
+from typing import List
+from typing import Optional
+from typing import Union
 
 from sqlalchemy.exc import IntegrityError
-from sqlmodel import select, Session
+from sqlmodel import select
+from sqlmodel import Session
 
 from app.database import engine
 from app.models import User
 from app.resources import BaseResource
 from app.responses import UniqueConstraintException
-from app.schemas import UserCreate, UserUpdate
-from app.utils import hash_password, to_dict
+from app.schemas import Permission
+from app.schemas import UserCreate
+from app.schemas import UserUpdate
+from app.utils import hash_password
+from app.utils import to_dict
 
 
 class UsersResource(BaseResource[User, UserCreate, UserUpdate]):
@@ -76,6 +82,19 @@ class UsersResource(BaseResource[User, UserCreate, UserUpdate]):
             if user == None or not user.active:
                 return None
             return user
+
+    def get_permissions(
+        self,
+        id: int,
+    ) -> Optional[List[Permission]]:
+        """
+        Obtain permissions for a specific user from the database.
+        """
+        with self.session as session:
+            user = session.get(self.model, id)
+            if user == None or not user.active:
+                return None
+            return user.role.permissions
 
 
 users = UsersResource(User, Session(engine))

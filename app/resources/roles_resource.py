@@ -46,6 +46,7 @@ class RolesResource(BaseResource[Role, RoleCreate, RoleUpdate]):
             if role == None or not role.active:
                 return None
             role.permissions = []
+            session.commit()
             for item in data:
                 obj_in_item = to_dict(item)
                 permission = permissions.get_one(obj_in_item["permission_id"])
@@ -54,10 +55,7 @@ class RolesResource(BaseResource[Role, RoleCreate, RoleUpdate]):
                 role.permissions.append(permission)
             role.updated_by = current_user_id
             session.add(role)
-            try:
-                session.commit()
-            except IntegrityError:
-                raise UniqueConstraintException()
+            session.commit()
             session.refresh(role)
             return role.permissions
 

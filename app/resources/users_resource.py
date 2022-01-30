@@ -40,7 +40,6 @@ class UsersResource(BaseResource[User, UserCreate, UserUpdate]):
                 session.commit()
             except IntegrityError as e:
                 raise UniqueConstraintException()
-            session.commit()
             session.refresh(user)
             return user
 

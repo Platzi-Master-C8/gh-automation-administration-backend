@@ -6,7 +6,7 @@ from sqlmodel import Field, Relationship, SQLModel
 from app.models import Auditor
 
 
-class RolePermission(SQLModel, table=True):
+class RolePermissionLink(SQLModel, table=True):
     """
     Class representing a pivot table between roles and permissions.
     """
@@ -40,7 +40,7 @@ class Permission(Auditor, table=True):
     permission_description: Optional[str] = Field(default=False)
     roles: List["Role"] = Relationship(
         back_populates="permissions",
-        link_model=RolePermission,
+        link_model=RolePermissionLink,
     )
 
 
@@ -62,7 +62,7 @@ class Role(Auditor, table=True):
     users: List["User"] = Relationship(back_populates="role")
     permissions: List["Permission"] = Relationship(
         back_populates="roles",
-        link_model=RolePermission,
+        link_model=RolePermissionLink,
     )
 
 

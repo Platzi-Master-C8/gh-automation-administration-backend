@@ -53,7 +53,7 @@ class BaseResource(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def update(
         self,
         id: int,
-        data: Union[CreateSchemaType, dict],
+        data: Union[UpdateSchemaType, dict],
         current_user_id: int,
     ) -> Optional[ModelType]:
         obj_in_data = to_dict(data)

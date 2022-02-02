@@ -2,9 +2,9 @@ from app.core import settings
 from app.database.populate import populate_permissions
 from app.database.populate import populate_roles
 from app.database.populate import populate_users
+from app.database.populate import set_relationships
 from app.database.reset import crate_all_tables
 from app.database.reset import drop_all_tables
-from app.models import *
 
 
 def init_database()->None:
@@ -18,3 +18,4 @@ def init_database()->None:
         populate_permissions(settings.DB_POPULATION) 
         populate_roles(settings.DB_POPULATION) 
         populate_users(settings.DB_POPULATION) 
+        set_relationships(settings.DB_POPULATION) 

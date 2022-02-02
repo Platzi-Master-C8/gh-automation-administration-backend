@@ -16,8 +16,8 @@ def populate_permissions(quantity: int)-> None:
     """
     random_permissions = RandomPermissionFactory.create_batch(quantity)
     for permission in random_permissions:
-        permissions.create(permission)
-    print("DEBUG:   ", f"{quantity} random permissions created.")
+        permissions.create(permission, 1)
+    print("DEBUG:   ", f"{quantity} permissions created.")
 
 def populate_roles(quantity: int) -> None:
     """
@@ -26,13 +26,13 @@ def populate_roles(quantity: int) -> None:
     administrator_role = AdministratorRoleFactory.create()
     individual_role = IndividualRoleFactory.create()
     organization_role = OrganizationRoleFactory.create()
-    roles.create(administrator_role)
-    roles.create(individual_role)
-    roles.create(organization_role)
+    roles.create(administrator_role, 1)
+    roles.create(individual_role, 1)
+    roles.create(organization_role, 1)
     random_roles = RandomRoleFactory.create_batch(quantity - 3)
     for role in random_roles:
-        roles.create(role)
-    print("DEBUG:   ", f"{quantity} random roles created.")
+        roles.create(role, 1)
+    print("DEBUG:   ", f"{quantity} roles created.")
 
 def populate_users(quantity: int)-> None:
     """
@@ -40,9 +40,26 @@ def populate_users(quantity: int)-> None:
     First, create a superadmin user and then create the rest of the users.
     """
     superadmin = SuperadminUserFactory.create()
-    users.create(superadmin)
-    print("DEBUG:   ", "Superadministrator user created.")
+    users.create(superadmin, 1)
     random_users = RandomUserFactory.create_batch(quantity - 1)
     for user in random_users:
-        users.create(user)
-    print("DEBUG:   ", f"{quantity} random users created.")
+        users.create(user, 1)
+    print("DEBUG:   ", f"{quantity} users created.")
+
+def set_relationships(quantity: int) -> None:
+    """
+    Establish relationships between roles and permissions.
+    """
+    raw_permissions = permissions.get_all()
+    converted_permissions = []
+    for raw_permission in raw_permissions:
+        permission = {
+            "permission_id": raw_permission.permission_id,
+            "permission_name": raw_permission.permission_name,
+            "permission_description": raw_permission.permission_description,
+        }
+        # permission = to_dict(raw_permission)
+        converted_permissions.append(permission)
+    for index in range(quantity):
+        roles.update_permissions(index + 1, converted_permissions, 1)
+    print("DEBUG:   ", "Relationships set.")
